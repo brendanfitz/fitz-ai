@@ -15,9 +15,6 @@ dependencies:
   - ipywidgets==8.1.5
   - transformers==4.51.3
   - langchain==0.3.25
-  - langchain-chroma==0.2.4
-  - langchain-huggingface==0.3.0
-  - langchain-openai==0.3.28
   - pip
   - pip:
       - tensorflow[and-cuda]
@@ -27,3 +24,6 @@ dependencies:
       - torchaudio
       - chromadb
       - sentence-transformers
+      - langchain-chroma==0.2.4
+      - langchain-huggingface==0.3.0
+      - langchain-openai==0.3.28

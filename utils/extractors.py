@@ -10,31 +10,23 @@ engine = create_engine(db_url)
 
 def fetch_categories():
     query = """
-            select parents.id      as parent_id, \
-                   parents.name    as parent_name, \
-                   categories.id   as category_id, \
-                   categories.name as category_name
-            from categories
-                     left join categories as parents on coalesce(categories.parent_id, categories.id) = parents.id
-            order by parents.id, categories.id \
+            select \
+              * \
+            from analytics.dim_budget_categories \
             """
-    df_cat = pd.read_sql(query, engine)
+    df_cat = pd.read_sql(query, engine).set_index('category_id')
     return df_cat
 
-def fetch_sample_transactions(limit=10):
+def fetch_sample_transactions(source='sapphire_reserve', limit=10):
     # Query the database
     query = f"""
-            select transactions.id,
-                   transaction_date,
-                   description,
-                   amount,
-                   categories.name as category_name
-            from transactions
-                     left join categories on transactions.category_id = categories.id
-            where account_id = 2 \
-              and amount < 0
-            order by transaction_date desc, description, id
+            select transaction_id, \
+                   transaction_date, \
+                   transaction_description, \
+                   amount \
+            from analytics.fct_transactions \
+            where source = '{source}' \
             limit {limit} \
             """
-    df_trans = pd.read_sql(query, engine).set_index('id')
+    df_trans = pd.read_sql(query, engine).set_index('transaction_id')
     return df_trans
