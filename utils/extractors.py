@@ -10,9 +10,9 @@ engine = create_engine(db_url)
 
 def fetch_categories():
     query = """
-            select \
-              * \
-            from analytics.dim_budget_categories \
+            select
+              *
+            from analytics.dim_budget_categories
             """
     df_cat = pd.read_sql(query, engine).set_index('category_id')
     return df_cat
@@ -20,13 +20,15 @@ def fetch_categories():
 def fetch_sample_transactions(source='sapphire_reserve', limit=10):
     # Query the database
     query = f"""
-            select transaction_id, \
-                   transaction_date, \
-                   transaction_description, \
-                   amount \
-            from analytics.fct_transactions \
-            where source = '{source}' \
-            limit {limit} \
+            select transaction_id,
+                   transaction_date,
+                   transaction_description,
+                   amount
+            from analytics.fct_transactions
+            where source = '{source}'
+              and category_id is null
+            order by transaction_date, transaction_description
+            limit {limit}
             """
     df_trans = pd.read_sql(query, engine).set_index('transaction_id')
     return df_trans
